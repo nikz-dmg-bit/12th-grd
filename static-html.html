@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAPC | Admin Dashboard</title>
+  <link rel="stylesheet" href="static-css.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="profile">
+      <div class="avatar">MN</div>
+      <h2>Mark Nevy Hila</h2>
+      <p class="student-id">2026-00123</p>
+      <span class="role">Admin view</span>
+    </div>
+
+    <div class="student-info">
+      <div class="info-row"><span>Course</span><strong>Information and<br>Communication Technology</strong></div>
+      <div class="info-row"><span>Year level</span><strong>12th Grade</strong></div>
+      <div class="info-row"><span>School year</span><strong>2026–2027, 1st Sem</strong></div>
+    </div>
+
+    <div class="students">
+      <p class="section-label">Students</p>
+      <div class="student selected"><strong>Mark Nevy Hila</strong><small>2026-00123</small></div>
+      <div class="student"><strong>Maria Santos</strong><small>2026-00456</small></div>
+      <div class="student"><strong>Mariane Castillo</strong><small>2026-00789</small></div>
+    </div>
+
+    <button class="sign-out" type="button">Sign out</button>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1>Mark Nevy Hila</h1>
+        <p>Edit the statuses and notes, then save.</p>
+      </div>
+      <button class="save-button" type="button">Save changes</button>
+    </header>
+
+    <section class="table-card" aria-label="Student assessment statuses">
+      <div class="table-head">
+        <span>Assessment</span>
+        <span>Payment</span>
+        <span>COR</span>
+        <span>Deficiency</span>
+        <span>Admin's note</span>
+      </div>
+
+      <article class="assessment-row">
+        <div class="assessment">
+          <strong>Unit 1 Assessment</strong>
+          <small>Clearance before Unit 1 exam</small>
+        </div>
+        <div class="field"><label>Payment</label><select><option>Paid</option><option>Partial</option><option>Pending</option></select></div>
+        <div class="field"><label>COR</label><select><option>Cleared</option><option>Processing</option><option>Not cleared</option></select></div>
+        <div class="field"><label>Deficiency</label><select><option>None</option><option>Unsettled payment</option><option>Incomplete requirements</option></select></div>
+        <div class="field"><label>Admin's note</label><textarea>All requirements complete. Cleared for Unit 1.</textarea></div>
+      </article>
+
+      <article class="assessment-row">
+        <div class="assessment">
+          <strong>Unit 2 Assessment</strong>
+          <small>Clearance before Unit 2 exam</small>
+        </div>
+        <div class="field"><label>Payment</label><select><option>Partial</option><option>Paid</option><option>Pending</option></select></div>
+        <div class="field"><label>COR</label><select><option>Processing</option><option>Cleared</option><option>Not cleared</option></select></div>
+        <div class="field"><label>Deficiency</label><select><option>Unsettled payment</option><option>None</option><option>Incomplete requirements</option></select></div>
+        <div class="field"><label>Admin's note</label><textarea>Remaining balance of ₱2,500. Please settle at the Cashier.</textarea></div>
+      </article>
+
+      <article class="assessment-row">
+        <div class="assessment">
+          <strong>Term Examination</strong>
+          <small>Clearance before term exam</small>
+        </div>
+        <div class="field"><label>Payment</label><select><option>Pending</option><option>Paid</option><option>Partial</option></select></div>
+        <div class="field"><label>COR</label><select><option>Not cleared</option><option>Processing</option><option>Cleared</option></select></div>
+        <div class="field"><label>Deficiency</label><select><option>Incomplete requirements</option><option>None</option><option>Unsettled payment</option></select></div>
+        <div class="field"><label>Admin's note</label><textarea>Submit your Form 137 copy to the Registrar.</textarea></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
