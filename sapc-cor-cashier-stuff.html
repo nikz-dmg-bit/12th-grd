@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SAPC COR Clearance System (Static Version)</title>
+<style>
+:root{
+  --bg:#f4f6fa;--card:#fff;--ink:#523014;--muted:#5b6780;--line:#d9dfeb;
+  --navy:#8A5523;--navy-d:#8A5523;--on-navy:#fff;
+  --ok:#1e7a46;--okbg:#e3f4ea;--warn:#8a5a00;--warnbg:#fff1d6;--bad:#a52a2a;--badbg:#fde4e4;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1624;--card:#17202f;--ink:#e8edf6;--muted:#9aa7bf;--line:#2a3649;--navy:#8A5523;--navy-d:#8A5523;--on-navy:#0b1220;
+  --ok:#6fd49a;--okbg:#17382a;--warn:#e8bd5a;--warnbg:#3a2f12;--bad:#f09a9a;--badbg:#401c1c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1624;--card:#17202f;--ink:#e8edf6;--muted:#9aa7bf;--line:#2a3649;--navy:#8A5523;--navy-d:#8A5523;--on-navy:#0b1220;
+  --ok:#6fd49a;--okbg:#17382a;--warn:#e8bd5a;--warnbg:#3a2f12;--bad:#f09a9a;--badbg:#401c1c;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+h1{font-size:1.3rem;margin:0 0 4px;color:var(--navy-d)}
+h2{font-size:1.1rem;margin:0 0 4px}
+p{margin:0}
+.muted{color:var(--muted);font-size:.9rem}
+button{font:inherit;cursor:pointer;border-radius:8px;padding:11px 16px;border:1.5px solid var(--navy);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+.primary{background:var(--navy);color:var(--on-navy)}
+.outline{background:transparent;color:var(--navy-d)}
+
+/* Role page */
+.center{min-height:90vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:32px 28px;width:100%;max-width:420px;text-align:center}
+.panel button{width:100%;margin-top:12px}
+.seal{width:180px;height:180px;margin:0 auto 12px;display:block;filter:drop-shadow(0 5px 10px rgba(0,0,0,.08))}
+
+/* App layout: sidebar + main */
+.app{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.side{background:var(--card);border-right:1px solid var(--line);padding:24px 18px;display:flex;flex-direction:column;gap:18px}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--navy);color:var(--on-navy);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;margin:0 auto}
+.profile{text-align:center}
+.profile h2{margin-top:10px}
+.facts{border-top:1px solid var(--line);padding-top:12px;font-size:.88rem;display:grid;gap:8px}
+.facts div{display:flex;justify-content:space-between;gap:8px}
+.facts span:first-child{color:var(--muted)}
+.list{display:grid;gap:6px}
+.list button{text-align:left;background:transparent;color:var(--ink);border:1px solid var(--line);padding:9px 12px;font-weight:500}
+.list button[aria-pressed="true"]{border-color:var(--ink);background:color-mix(in srgb,var(--navy) 12%,transparent);font-weight:700}
+.side .signout{margin-top:auto}
+.main{padding:28px 24px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:18px}
+
+/* Table */
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:680px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:.85rem}
+tr:last-child td{border-bottom:0}
+.term{font-weight:700;white-space:nowrap}
+.term small{display:block;color:var(--muted);font-weight:400}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.82rem;font-weight:600;white-space:nowrap}
+.good{background:var(--okbg);color:var(--ok)}
+.wait{background:var(--warnbg);color:var(--warn)}
+.bad{background:var(--badbg);color:var(--bad)}
+.none{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+td select,td textarea{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+td textarea{min-height:64px;resize:vertical}
+.note{max-width:280px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.toast{color:var(--ok);font-weight:600;font-size:.9rem;min-height:1.3em}
+.badge-admin{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;background:var(--navy);color:var(--on-navy);font-size:.78rem;font-weight:600}
+
+@media(max-width:760px){
+  .app{grid-template-columns:1fr}
+  .side{border-right:0;border-bottom:1px solid var(--line)}
+  .main{padding:20px 14px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ---------- Sample data (replace with database later) ----------
+const PAYMENT = ["Paid","Partial","Pending"];
+const COR     = ["Cleared","Processing","Not cleared"];
+const DEFICIENCY = ["None","Incomplete requirements","Missing submission","Unsettled payment"];
+const TERMS = [
+  {key:"u1", name:"Unit 1 Assessment", sub:"Clearance before Unit 1 exam"},
+  {key:"u2", name:"Unit 2 Assessment", sub:"Clearance before Unit 2 exam"},
+  {key:"te", name:"Term Examination",  sub:"Clearance before term exam"}
+];
+const students = [
+  {id:"2026-00123", name:"Mark Nevy Hila", Strand:"Information and Communication Technology", year:"12th Grade", sy:"2026–2027, 1st Sem",
+   terms:{
+    u1:{pay:"Paid",    cor:"Cleared",     def:"None",                   note:"All requirements complete. Cleared for Unit 1."},
+    u2:{pay:"Partial", cor:"Processing",  def:"Unsettled payment",      note:"Remaining balance of ₱2,500. Please settle at the Cashier."},
+    te:{pay:"Pending", cor:"Not cleared", def:"Incomplete requirements",note:"Submit your Form 137 copy to the Registrar."}}},
+  {id:"2026-4884", name:"Ashley Nicole Dacasin", Strand:"Information and Communication Technology", year:"12th Grade", sy:"2026–2027, 1st Sem",
+   terms:{
+    u1:{pay:"Paid", cor:"Cleared", def:"None", note:""},
+    u2:{pay:"Paid", cor:"Cleared", def:"None", note:""},
+    te:{pay:"Pending", cor:"Processing", def:"Unsettled payment", note:"Payment not yet recorded."}}},
+  {id:"2026-00789", name:"Mariane Castillo", Strand:"Accountancy, Business, and Management", year:"12th Grade", sy:"2026–2027, 1st Sem",
+   terms:{
+    u1:{pay:"Pending", cor:"Not cleared", def:"Missing submission", note:"Missing medical certificate."},
+    u2:{pay:"Pending", cor:"Not cleared", def:"None", note:""},
+    te:{pay:"Pending", cor:"Not cleared", def:"None", note:""}}}
+];
+
+const state = { view:"role", sel:0, toast:"" };   // view: role | student | admin
+const STUDENT_LOGGED_IN = 0;                       // static demo: student = first record
+
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cls = v => ({Paid:"good",Cleared:"good",Partial:"wait",Processing:"wait",Pending:"wait","Not cleared":"bad",None:"none"}[v] || "bad");
+const tag = v => `<span class="tag ${cls(v)}">${esc(v)}</span>`;
+const initials = n => n.split(" ").map(w=>w[0]).slice(0,2).join("");
+
+const SEAL = `<img class="seal" src="sapc logo.jpeg" alt="San Antonio de Padua College logo">`;
+
+// ---------- Views ----------
+function roleView(){
+  return `<div class="center"><div class="panel">${SEAL}
+    <h1>San Antonio de Padua College</h1>
+    <p class="muted">COR Processing &amp; Cashier Payment Monitoring System</p>
+    <p class="muted" style="margin-top:22px">Choose your role to continue</p>
+    <button class="primary" data-go="student">I’m a Student</button>
+    <button class="outline" data-go="admin">I’m an Admin</button></div></div>`;
+}
+
+function sidebar(s, isAdmin){
+  const profile = `<div class="profile"><div class="avatar" aria-hidden="true">${esc(initials(s.name))}</div>
+    <h2>${esc(s.name)}</h2><p class="muted">${esc(s.id)}</p>${isAdmin?'<span class="badge-admin">Admin view</span>':''}</div>
+    <div class="facts"><div><span>Strand</span><span>${esc(s.Strand)}</span></div>
+    <div><span>Year level</span><span>${esc(s.year)}</span></div>
+    <div><span>School year</span><span>${esc(s.sy)}</span></div></div>`;
+  const picker = isAdmin ? `<div><p class="muted" style="margin-bottom:8px">Students</p><div class="list">
+    ${students.map((x,i)=>`<button data-pick="${i}" aria-pressed="${i===state.sel}">${esc(x.name)}<br><span class="muted">${esc(x.id)}</span></button>`).join("")}</div></div>` : "";
+  return `<aside class="side">${profile}${picker}<button class="outline signout" data-go="role">Sign out</button></aside>`;
+}
+
+function overall(s){
+  const t = TERMS.map(x=>s.terms[x.key]);
+  const done = t.filter(x=>x.pay==="Paid" && x.cor==="Cleared").length;
+  return `${done} of ${t.length} assessments cleared`;
+}
+
+function studentView(){
+  const s = students[STUDENT_LOGGED_IN];
+  const rows = TERMS.map(t=>{ const r=s.terms[t.key]; return `<tr>
+    <td class="term">${t.name}<small>${t.sub}</small></td><td>${tag(r.pay)}</td><td>${tag(r.cor)}</td>
+    <td>${tag(r.def)}</td><td class="note">${r.note?esc(r.note):'<span class="muted">No note.</span>'}</td></tr>`}).join("");
+  return `<div class="app">${sidebar(s,false)}<main class="main">
+    <h1>My COR and Payment Status</h1><p class="muted">${overall(s)}. Check your admin’s note for anything you still need to complete.</p>
+    <div class="card"><div class="scroll"><table>
+      <thead><tr><th>Assessment</th><th>Payment</th><th>COR</th><th>Deficiency</th><th>Admin’s note</th></tr></thead>
+      <tbody>${rows}</tbody></table></div></div></main></div>`;
+}
+
+function opts(list, cur){ return list.map(o=>`<option${o===cur?" selected":""}>${o}</option>`).join(""); }
+
+function adminView(){
+  const s = students[state.sel];
+  const rows = TERMS.map(t=>{ const r=s.terms[t.key]; return `<tr>
+    <td class="term">${t.name}<small>${t.sub}</small></td>
+    <td><select aria-label="${t.name} payment" data-f="${t.key}.pay">${opts(PAYMENT,r.pay)}</select></td>
+    <td><select aria-label="${t.name} COR" data-f="${t.key}.cor">${opts(COR,r.cor)}</select></td>
+    <td><select aria-label="${t.name} deficiency" data-f="${t.key}.def">${opts(DEFICIENCY,r.def)}</select></td>
+    <td class="note"><textarea aria-label="${t.name} note" data-f="${t.key}.note" placeholder="Write a note for the student">${esc(r.note)}</textarea></td></tr>`}).join("");
+  return `<div class="app">${sidebar(s,true)}<main class="main">
+    <div class="bar"><div><h1>${esc(s.name)}</h1><p class="muted">Edit the statuses and notes, then save.</p></div>
+      <div><button class="primary" data-save>Save changes</button></div></div>
+    <p class="toast" role="status">${state.toast}</p>
+    <div class="card"><div class="scroll"><table>
+      <thead><tr><th>Assessment</th><th>Payment</th><th>COR</th><th>Deficiency</th><th>Admin’s note</th></tr></thead>
+      <tbody>${rows}</tbody></table></div></div></main></div>`;
+}
+
+function render(){
+  document.getElementById("app").innerHTML = state.view==="role"?roleView():state.view==="student"?studentView():adminView();
+}
+
+// ---------- Events ----------
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]"), p=e.target.closest("[data-pick]"), sv=e.target.closest("[data-save]");
+  if(g){ state.view=g.dataset.go; state.toast=""; render(); }
+  else if(p){ state.sel=Number(p.dataset.pick); state.toast=""; render(); }
+  else if(sv){ state.toast="Changes saved."; render(); }
+});
+document.addEventListener("change",e=>{
+  const f=e.target.dataset.f; if(!f) return;
+  const [k,field]=f.split("."); students[state.sel].terms[k][field]=e.target.value; state.toast="";
+  document.querySelector(".toast").textContent="";
+});
+render();
+</script>
+</body>
+</html>
